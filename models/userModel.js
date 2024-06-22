@@ -43,8 +43,21 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// creating a function that we check if the password that the user entered matched the one stotre stored in the database
+// hashing password
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 12); //encrypting or hashing the password
+  this.passwordConfirm = undefined; //this will delete password confirm field so that it will not be stored in the database
+  next();
+});
 
+// update changedPasswordAt field for the user(for resetting password)
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+// creating a function that we check if the password that the user entered matched the one stotre stored in the database
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
