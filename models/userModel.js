@@ -83,5 +83,21 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   // false means that password not changed
   return false;
 };
+
+// function to create password reset token
+userSchema.methods.createPasswordResetToken = function () {
+  // cerate a reset token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  // encrypting the reset token
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  console.log(resetToken, this.passwordResetToken);
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  return resetToken; //we returned the the plain reset token because it is the one we are going to send back to the client
+};
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;
