@@ -1,5 +1,7 @@
+const crypto = require("crypto"); //this is a built in node module basically use for generating randon strings expecially (passwordreset token)
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   userName: {
@@ -41,5 +43,13 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// creating a function that we check if the password that the user entered matched the one stotre stored in the database
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 const User = mongoose.model("User", userSchema);
 module.exports = User;

@@ -52,3 +52,21 @@ exports.signup = catchAsync(async (req, res, next) => {
   // calling the createAndSendToken function
   createAndSendToken(newUser, 201, res);
 });
+
+// loggin a user
+exports.login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+  // 1)check if email and password exist
+  if (!email || !password) {
+    return next(new AppError("please provide email and password", 400));
+  }
+
+  //   // 2)check if user exist and password is correct
+  const user = await User.findOne({ email: email }).select("+password");
+  //checking is user exist and both the password passed by the user and the one in the databse matched
+  if (!user || !(await user.correctPassword(password, user.password))) {
+    return next(new AppError("incorrect email or password", 401));
+  }
+  //calling createAndSendToken function
+  createAndSendToken(user, 200, res);
+});
