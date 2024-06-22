@@ -57,6 +57,12 @@ userSchema.pre("save", function (next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
+
+//query middleware
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
 // creating a function that we check if the password that the user entered matched the one stotre stored in the database
 userSchema.methods.correctPassword = async function (
   candidatePassword,
