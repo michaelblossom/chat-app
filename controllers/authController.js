@@ -70,3 +70,45 @@ exports.login = catchAsync(async (req, res, next) => {
   //calling createAndSendToken function
   createAndSendToken(user, 200, res);
 });
+
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1)Getting token and check if it exist
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookie.jwt;
+  }
+  if (!token) {
+    // console.log(token);
+    return next(
+      new AppError("you are not loggedin, please login to get access", 401)
+    );
+  }
+  // 2)verify the token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  // console.log(decoded);
+  // 3)check if the user accessing the route still exist
+  const currentUser = await User.findById(decoded.id); //we are using findById because we use our id as our payload in generating the token that is stored in our decoded
+  if (!currentUser) {
+    return next(
+      new AppError(
+        "The User belonging to this token does not exist anylonger",
+        401
+      )
+    );
+  }
+  //   // 4)check if user change password after token was issued
+  //   // calling passwordchangedAfter instant function from userModel
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError("User recently changed password please login again", 401)
+    );
+  }
+  // GRANT ACCESS TO PROTECTED ROUTE
+  req.user = currentUser;
+  next();
+});
