@@ -1,0 +1,5 @@
+node_modules
+.history
+config.env
+package-lock.json
+yarn.lock
