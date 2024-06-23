@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
-
+const cors = require("cors");
+const http = require("http");
 const AppError = require("./utils/appError");
 const userRouter = require("./routes/userRoute");
 const chatSessionRouter = require("./routes/chatSession.route");
@@ -8,10 +9,13 @@ const messageRouter = require("./routes/messageRoute");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
+
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
 app.use(express.json({ limit: "10kb" }));
+app.use(cors());
 
 app.use(express.static(`${__dirname}/public`));
 
