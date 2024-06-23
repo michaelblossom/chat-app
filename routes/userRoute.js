@@ -11,7 +11,7 @@ router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
 
 // // protecting thr routes below for onl loggedin users
-// // router.use(authController.protect);
+router.use(authController.protect);
 
 router.patch("/updateMyPassword", authController.updatePassword);
 // update the profile of the currently logged in user
