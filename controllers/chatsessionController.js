@@ -18,3 +18,20 @@ exports.createChatSession = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.getAllChatSession = catchAsync(async (req, res, next) => {
+  const userId = mongoose.Types.ObjectId(req.user.id);
+
+  const chatSessions = await ChatSession.find({ users: userId }).populate({
+    path: "users",
+    select: "email photo  userName",
+  });
+
+  res.status(200).json({
+    count: chatSessions.length,
+    status: "success",
+    data: {
+      chatSessions,
+    },
+  });
+});
