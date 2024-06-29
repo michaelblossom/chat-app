@@ -22,7 +22,6 @@ mongoose
     useUnifiedTopology: true,
   })
   .then((con) => {
-    // console.log(con.connections);
     console.log("Db connection successful");
   });
 const port = 3000;
@@ -31,12 +30,7 @@ const server = app.listen(port, () => {
   console.log(`App running in port ${port}...`);
 });
 
-const io = new Server(server, {
-  cors: {
-    origin: ["https://agp-careers-dev.netlify.app", "http://localhost:3000"],
-    credentials: true,
-  },
-});
+const io = new Server(server);
 
 const Message = mongoose.model("Message");
 const User = mongoose.model("User");
