@@ -11,7 +11,8 @@ exports.createChatSession = catchAsync(async (req, res, next) => {
     );
 
   const newChatSession = await ChatSession.create(req.body);
-  res.status(201).json({
+  res.status(201);
+  res.json({
     status: "success",
     data: {
       ChatSession: newChatSession,

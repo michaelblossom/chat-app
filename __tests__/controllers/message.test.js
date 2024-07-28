@@ -1,7 +1,4 @@
-const {
-  createMessage,
-  editMessage,
-} = require("../../controllers/messageController");
+const { createMessage } = require("../../controllers/messageController");
 const Message = require("./../../models/message");
 
 //mocking out query methods in User collection(model)
