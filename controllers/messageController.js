@@ -12,7 +12,8 @@ const filterObj = (obj, ...allowedFields) => {
 
 exports.createMessage = catchAsync(async (req, res, next) => {
   const newMessage = await Message.create(req.body);
-  res.status(201).json({
+  res.status(201);
+  res.json({
     status: "success",
     data: {
       message: newMessage,
