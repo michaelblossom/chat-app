@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
+
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
+// const logger = require("./logger/index");
+
 const catchAsync = require("./utils/catchAsync");
 const chatEvents = require("./utils/chatEvents");
 
@@ -12,6 +15,7 @@ require("./models/chatSession");
 require("./models/userModel");
 
 const app = require("./app");
+
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
   process.env.DATABASE_PASSWORD
@@ -23,6 +27,7 @@ mongoose
   })
   .then((con) => {
     console.log("Db connection successful");
+    // logger.info("Db connection successful");
   });
 const port = 3000;
 // starting the server
